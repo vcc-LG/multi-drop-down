@@ -1,0 +1,75 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+        <h1>Select user</h1>
+        <br />
+        <br />
+        <form id="dropdowns" method='post'>{% csrf_token %}
+
+        			<label>Country:</label>
+        				<select id="country" name="country">
+        					<option value="000">-Select Country-</option>
+        				</select>
+
+        			<br />
+              <br />
+
+        			<label>City:</label>
+        				<select id="city" name="city">
+        					<option value="000">-Select City-</option>
+        				</select>
+
+        			<br />
+              <br />
+        			<label>User:</label>
+        				<select id="user" name="user">
+        					<option value="000">-Select User-</option>
+        				</select>
+
+        			<br />
+                    <br />
+              <button type="submit" class="save btn btn-default">OK</button>
+
+        		</form>
+
+<script>
+var myJson = {{ data_in|safe }};
+$.each(myJson.country, function (index, value) {
+    $("#country").append('<option value="'+value.name+'">'+value.name+'</option>');
+});
+
+$('#country').on('change', function(){
+    for(var i = 0; i < myJson.country.length; i++)
+    {
+      if(myJson.country[i].name == $(this).val())
+      {
+         $('#city').html('<option value="000">-Select City-</option>');
+         $.each(myJson.country[i].cities, function (index, value) {
+            $("#city").append('<option value="'+value.name+'">'+value.name+'</option>');
+        });
+      }
+    }
+});
+
+$('#city').on('change', function(){
+    for(var i = 0; i < myJson.country.length; i++)
+    {
+      for(var j = 0; j < myJson.country[i].cities.length; j++)
+      {
+
+        if(myJson.country[i].cities[j].name == $(this).val())
+        {
+           $('#user').html('<option value="000">-Select User-</option>');
+           $.each(myJson.country[i].cities[j].users, function (index, value) {
+              $("#user").append('<option value="'+value+'">'+value+'</option>');
+          });
+        }
+
+      }
+
+    }
+});
+
+</script>
+{% endblock %}
